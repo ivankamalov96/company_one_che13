@@ -323,6 +323,18 @@
             padding: 6rem 0 4rem;
             text-align: left;
             position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(100, 255, 218, 0.05));
+            z-index: 1;
         }
         
         .hero-content {
@@ -344,6 +356,25 @@
         .hero h1 .highlight {
             color: var(--accent);
             -webkit-text-fill-color: var(--accent);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .hero h1 .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s ease;
+        }
+        
+        .hero h1:hover .highlight::after {
+            transform: scaleX(1);
         }
         
         .hero p {
@@ -440,12 +471,12 @@
             line-height: 1.8;
         }
         
-        /* About - Адаптация под размеры картинки */
+        /* About - ПЕРЕРАБОТАННАЯ СЕКЦИЯ С ФОТОГРАФИЕЙ */
         .about-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 4rem;
-            align-items: center;
+            align-items: start;
         }
         
         .about-text {
@@ -463,36 +494,149 @@
             font-weight: 500;
         }
         
-        .about-image {
+        /* НОВЫЙ ДИЗАЙН ФОТОГРАФИИ - БЕЗ ОБРЕЗКИ */
+        .about-image-container {
+            position: relative;
+            border-radius: var(--radius);
+            overflow: visible;
+            margin-top: 2rem;
+        }
+        
+        .about-image-frame {
+            position: relative;
             border-radius: var(--radius);
             overflow: hidden;
             box-shadow: var(--shadow);
-            position: relative;
             border: var(--border);
-            height: 400px; /* Фиксированная высота для структуры */
+            transform: perspective(1000px) rotateY(-5deg) rotateX(2deg);
+            transition: var(--transition);
+            max-width: 100%;
+            height: auto;
         }
         
-        .about-image img {
+        .about-image-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            display: block;
-            transition: var(--transition);
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(100, 255, 218, 0.05) 50%,
+                transparent 70%
+            );
+            z-index: 2;
+            pointer-events: none;
         }
         
-        .about-image:hover img {
-            transform: scale(1.03);
+        .about-image-frame::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: -20px;
+            bottom: -20px;
+            background: linear-gradient(135deg, var(--accent) 0%, transparent 30%);
+            border-radius: var(--radius);
+            opacity: 0.1;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .about-image-frame:hover {
+            transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
+            box-shadow: 
+                0 25px 50px -12px rgba(2, 12, 27, 0.8),
+                0 0 30px rgba(100, 255, 218, 0.2);
+        }
+        
+        /* Фотография - сохраняем пропорции, без обрезки */
+        .about-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: var(--transition);
+            filter: grayscale(10%) contrast(110%) brightness(0.9);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .about-image-frame:hover .about-image {
+            filter: grayscale(0%) contrast(115%) brightness(1);
+            transform: scale(1.02);
+        }
+        
+        /* Декоративные элементы для фотографии */
+        .image-decoration {
+            position: absolute;
+            z-index: 0;
+        }
+        
+        .decoration-1 {
+            top: -15px;
+            left: -15px;
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            opacity: 0.3;
+            animation: pulse 4s infinite ease-in-out;
+        }
+        
+        .decoration-2 {
+            bottom: -10px;
+            right: -10px;
+            width: 30px;
+            height: 30px;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: pulse 3s infinite ease-in-out;
+            animation-delay: 1s;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.2; }
+            50% { transform: scale(1.1); opacity: 0.3; }
+        }
+        
+        /* Подпись к фотографии */
+        .image-caption {
+            margin-top: 1rem;
+            text-align: center;
+            color: var(--gray);
+            font-size: 0.9rem;
+            font-style: italic;
+            padding: 0 1rem;
         }
         
         /* Services */
         .services {
             background-color: var(--secondary);
+            position: relative;
+        }
+        
+        .services::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(100, 255, 218, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(100, 255, 218, 0.03) 0%, transparent 50%);
+            pointer-events: none;
         }
         
         .service-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 2rem;
+            position: relative;
+            z-index: 2;
         }
         
         .service-card {
@@ -501,12 +645,14 @@
             padding: 2rem;
             transition: var(--transition);
             border: var(--border);
+            backdrop-filter: blur(10px);
         }
         
         .service-card:hover {
             transform: translateY(-5px);
             box-shadow: var(--shadow);
             border-color: rgba(100, 255, 218, 0.3);
+            background-color: rgba(17, 34, 64, 0.9);
         }
         
         .service-icon {
@@ -566,12 +712,26 @@
         .contact {
             background-color: var(--dark);
             border-top: var(--border);
+            position: relative;
+        }
+        
+        .contact::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 70% 30%, rgba(100, 255, 218, 0.03) 0%, transparent 50%);
+            pointer-events: none;
         }
         
         .contact-content {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 3rem;
+            position: relative;
+            z-index: 2;
         }
         
         .contact-info {
@@ -748,6 +908,12 @@
                 grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             }
             
+            .about-image-frame {
+                transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
+                max-width: 80%;
+                margin: 0 auto;
+            }
+            
             .logo-graphic {
                 width: 60px;
                 height: 60px;
@@ -815,8 +981,8 @@
                 gap: 2rem;
             }
             
-            .about-image {
-                height: 350px;
+            .about-image-frame {
+                max-width: 100%;
             }
             
             .logo-graphic {
@@ -851,10 +1017,6 @@
                 grid-template-columns: 1fr;
             }
             
-            .about-image {
-                height: 300px;
-            }
-            
             .logo-graphic {
                 width: 50px;
                 height: 50px;
@@ -868,44 +1030,6 @@
             .logo-text {
                 font-size: 0.75rem;
             }
-        }
-        
-        /* Прямоугольная версия лого для футера */
-        .footer-logo-graphic {
-            width: 50px;
-            height: 50px;
-            position: relative;
-        }
-        
-        .footer-logo-frame {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 1px solid rgba(100, 255, 218, 0.2);
-            border-radius: 8px;
-            z-index: 1;
-        }
-        
-        .footer-logo-center {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            top: 10px;
-            left: 10px;
-            background: rgba(10, 25, 47, 0.9);
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2;
-            border: 1px solid rgba(100, 255, 218, 0.3);
-        }
-        
-        .footer-logo-text {
-            font-size: 0.8rem;
-            font-weight: 900;
-            color: var(--accent);
-            letter-spacing: 1px;
         }
     </style>
 </head>
@@ -965,7 +1089,7 @@
     <section class="hero">
         <div class="container hero-content">
             <h1>ПИК-Интегратор: <span class="highlight">Интеллектуальная автоматизация</span></h1>
-            <p>Автоматизация технологических процессов, систем диспетчеризации и учета энергоресурсов.</p>
+            <p>Преобразуем промышленные процессы в высокоэффективные автоматизированные системы. От проектирования до полной интеграции.</p>
             <a href="#contact" class="cta-button">
                 <span>Обсудить проект</span>
                 <i class="fas fa-arrow-right"></i>
@@ -993,7 +1117,7 @@
         <div class="container">
             <div class="section-title">
                 <h2>О компании</h2>
-                <p>Мы — команда профессионалов в области автоматизации технологических процессов</p>
+                <p>Мы превращаем сложные технологические задачи в эффективные и надежные решения</p>
             </div>
             
             <div class="about-content">
@@ -1002,8 +1126,18 @@
                     <p>В отличие от обычного электромонтажа, требующего значительных материальных затрат, мы фокусируемся на <span class="highlight">интеллектуальной составляющей</span>: проектировании, программировании и наладке систем, что дает нашим клиентам максимальную отдачу от инвестиций.</p>
                     <p>Наша цель — сделать автоматизацию <span class="highlight">доступной и понятной</span> для любого предприятия, независимо от его размеров и текущего уровня технологической оснащенности.</p>
                 </div>
-                <div class="about-image">
-                    <img src="automation.jpg" alt="Автоматизация производства">
+                
+                <div class="about-image-container">
+                    <!-- РАМКА С 3D ЭФФЕКТОМ -->
+                    <div class="about-image-frame">
+                        <!-- ФОТОГРАФИЯ БЕЗ ОБРЕЗКИ -->
+                        <img src="automation.jpg" alt="Автоматизация производства" class="about-image">
+                        
+                        <!-- Декоративные элементы -->
+                        <div class="image-decoration decoration-1"></div>
+                        <div class="image-decoration decoration-2"></div>
+                    </div>
+                    <div class="image-caption">Интеллектуальные системы автоматизации производства</div>
                 </div>
             </div>
         </div>
@@ -1137,10 +1271,11 @@
             <div class="footer-content">
                 <div class="footer-column">
                     <div class="logo-container" style="margin-bottom: 1rem;">
-                        <div class="footer-logo-graphic">
-                            <div class="footer-logo-frame"></div>
-                            <div class="footer-logo-center">
-                                <div class="footer-logo-text">ПИК</div>
+                        <div class="logo-graphic" style="width: 50px; height: 50px;">
+                            <div class="logo-frame" style="border: 1px solid rgba(100, 255, 218, 0.2);"></div>
+                            <div class="logo-base" style="width: 85%; height: 85%;"></div>
+                            <div class="logo-center" style="width: 30px; height: 30px;">
+                                <div class="logo-text" style="font-size: 0.8rem;">ПИК</div>
                             </div>
                         </div>
                         <div class="logo-text-container">
@@ -1182,7 +1317,7 @@
             </div>
             
             <div class="copyright">
-                <p>&copy; 2026 ООО "ПИК-Интегратор". Все права защищены.</p>
+                <p>&copy; 2023 ООО "ПИК-Интегратор". Все права защищены.</p>
             </div>
         </div>
     </footer>
@@ -1252,13 +1387,60 @@
             }
         });
         
-        // Предзагрузка картинки для плавного отображения
+        // Предзагрузка и оптимизация изображения
         window.addEventListener('load', function() {
-            const img = new Image();
-            img.src = 'automation.jpg';
-            img.onload = function() {
-                console.log('Изображение загружено: automation.jpg');
-            };
+            const img = document.querySelector('.about-image');
+            if (img) {
+                // Проверяем, загружено ли изображение
+                if (img.complete && img.naturalWidth !== 0) {
+                    console.log('Изображение загружено успешно');
+                    applyImageOptimizations(img);
+                } else {
+                    img.onload = function() {
+                        console.log('Изображение загружено после ожидания');
+                        applyImageOptimizations(img);
+                    };
+                    img.onerror = function() {
+                        console.warn('Ошибка загрузки изображения, используем fallback');
+                        img.src = 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80';
+                    };
+                }
+            }
+        });
+        
+        function applyImageOptimizations(img) {
+            // Адаптивное качество изображения
+            const isRetina = window.devicePixelRatio > 1;
+            img.style.imageRendering = isRetina ? 'auto' : 'crisp-edges';
+            
+            // Ленивая загрузка для мобильных устройств
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            if (img.dataset.src) {
+                                img.src = img.dataset.src;
+                            }
+                            observer.unobserve(img);
+                        }
+                    });
+                });
+                
+                if (img.dataset.src) {
+                    observer.observe(img);
+                }
+            }
+        }
+        
+        // Параллакс эффект для героя
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            if (hero) {
+                const rate = scrolled * -0.5;
+                hero.style.backgroundPosition = `0px ${rate}px`;
+            }
         });
     </script>
 </body>
