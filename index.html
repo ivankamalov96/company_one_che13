@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ПИК-Интегратор - интеллектуальные системы автоматизации</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0a192f;
+            --secondary: #112240;
+            --accent: #64ffda;
+            --accent-dark: #52d1b9;
+            --light: #ccd6f6;
+            --dark: #020c1b;
+            --gray: #8892b0;
+            --shadow: 0 10px 30px -15px rgba(2, 12, 27, 0.7);
+            --radius: 8px;
+            --transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+            --border: 1px solid rgba(100, 255, 218, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', -apple-system, sans-serif;
+        }
+        
+        body {
+            line-height: 1.6;
+            color: var(--light);
+            background-color: var(--primary);
+            overflow-x: hidden;
+            font-weight: 300;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background-color: rgba(10, 25, 47, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: var(--border);
+            transition: var(--transition);
+        }
+        
+        .scrolled {
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: var(--light);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        /* УЛУЧШЕННЫЙ СТРУКТУРИРОВАННЫЙ ЛОГОТИП */
+        .logo-graphic {
+            width: 70px;
+            height: 70px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Внешняя рамка для структуры */
+        .logo-frame {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(100, 255, 218, 0.3);
+            border-radius: 12px;
+            box-shadow: inset 0 0 15px rgba(100, 255, 218, 0.1);
+            z-index: 1;
+        }
+        
+        /* Основание с градиентом */
+        .logo-base {
+            position: absolute;
+            width: 90%;
+            height: 90%;
+            background: linear-gradient(135deg, rgba(16, 42, 80, 0.8) 0%, rgba(10, 25, 47, 0.9) 100%);
+            border-radius: 8px;
+            z-index: 2;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Орбита с лучшей структурой */
+        .orbit {
+            position: absolute;
+            width: 85%;
+            height: 85%;
+            border: 1.5px solid var(--accent);
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: orbitRotate 25s linear infinite;
+            z-index: 3;
+        }
+        
+        /* Точки на орбите для структуры */
+        .orbit::before, .orbit::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent);
+        }
+        
+        .orbit::before {
+            top: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .orbit::after {
+            bottom: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        /* Упорядоченные шестеренки */
+        .gear {
+            position: absolute;
+            color: var(--accent);
+            z-index: 4;
+            filter: drop-shadow(0 0 2px rgba(100, 255, 218, 0.5));
+        }
+        
+        .gear-large {
+            font-size: 1.8rem;
+            width: 30px;
+            height: 30px;
+            animation: gearRotate 20s linear infinite;
+        }
+        
+        .gear-small {
+            font-size: 1.2rem;
+            width: 20px;
+            height: 20px;
+            animation: gearRotateReverse 15s linear infinite;
+        }
+        
+        /* Позиции шестеренок в углах для устойчивости */
+        .gear-top-right { top: 8px; right: 8px; }
+        .gear-bottom-left { bottom: 8px; left: 8px; }
+        
+        /* Центральный контейнер для текста */
+        .logo-center {
+            position: absolute;
+            width: 42px;
+            height: 42px;
+            background: rgba(10, 25, 47, 0.95);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            border: 1px solid rgba(100, 255, 218, 0.4);
+            box-shadow: 
+                0 0 10px rgba(100, 255, 218, 0.2),
+                inset 0 0 8px rgba(100, 255, 218, 0.1);
+        }
+        
+        /* Текст с улучшенной читаемостью */
+        .logo-text {
+            font-size: 1rem;
+            font-weight: 900;
+            color: var(--accent);
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            text-shadow: 
+                0 0 10px rgba(100, 255, 218, 0.6),
+                0 0 20px rgba(100, 255, 218, 0.3);
+            position: relative;
+        }
+        
+        /* Центральная точка с эффектом свечения */
+        .center-dot {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            z-index: 6;
+            box-shadow: 0 0 12px var(--accent);
+        }
+        
+        /* Анимации */
+        @keyframes orbitRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes gearRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes gearRotateReverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+        
+        /* Текстовая часть логотипа */
+        .logo-text-container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo-main-text {
+            font-size: 1.6rem;
+            font-weight: 700;
+            line-height: 1;
+            background: linear-gradient(to right, var(--light), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+        }
+        
+        .logo-subtext {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-top: 5px;
+            font-weight: 400;
+            max-width: 200px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav li {
+            position: relative;
+        }
+        
+        nav a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 8px 0;
+            font-size: 0.9rem;
+        }
+        
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            bottom: 0;
+            left: 0;
+            transition: var(--transition);
+        }
+        
+        nav a:hover {
+            color: var(--accent);
+        }
+        
+        nav a:hover::after {
+            width: 100%;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        
+        .mobile-menu-btn:hover {
+            background-color: rgba(100, 255, 218, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(
+                rgba(10, 25, 47, 0.95), 
+                rgba(10, 25, 47, 0.98)
+            );
+            color: white;
+            padding: 6rem 0 4rem;
+            text-align: left;
+            position: relative;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            background: linear-gradient(to right, var(--light), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            max-width: 800px;
+        }
+        
+        .hero h1 .highlight {
+            color: var(--accent);
+            -webkit-text-fill-color: var(--accent);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin-bottom: 2rem;
+            color: var(--gray);
+            font-weight: 300;
+            line-height: 1.8;
+        }
+        
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+        
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background-color: transparent;
+            color: var(--accent);
+            padding: 15px 35px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition);
+            border: 1px solid var(--accent);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-button:hover {
+            background-color: rgba(100, 255, 218, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px -10px rgba(100, 255, 218, 0.3);
+        }
+        
+        /* Sections */
+        section {
+            padding: 5rem 0;
+        }
+        
+        .section-title {
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .section-title h2 {
+            font-size: 2.2rem;
+            color: var(--light);
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 2px;
+            background-color: var(--accent);
+            bottom: -10px;
+            left: 0;
+        }
+        
+        .section-title p {
+            color: var(--gray);
+            max-width: 700px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        /* About - Адаптация под размеры картинки */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .about-text p {
+            margin-bottom: 1.5rem;
+            color: var(--gray);
+        }
+        
+        .about-text .highlight {
+            color: var(--accent);
+            font-weight: 500;
+        }
+        
+        .about-image {
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            position: relative;
+            border: var(--border);
+            height: 400px; /* Фиксированная высота для структуры */
+        }
+        
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: var(--transition);
+        }
+        
+        .about-image:hover img {
+            transform: scale(1.03);
+        }
+        
+        /* Services */
+        .services {
+            background-color: var(--secondary);
+        }
+        
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        
+        .service-card {
+            background-color: rgba(17, 34, 64, 0.7);
+            border-radius: var(--radius);
+            padding: 2rem;
+            transition: var(--transition);
+            border: var(--border);
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+            border-color: rgba(100, 255, 218, 0.3);
+        }
+        
+        .service-icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+        
+        .service-card h3 {
+            color: var(--light);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .service-card p {
+            color: var(--gray);
+            line-height: 1.7;
+        }
+        
+        /* Expertise */
+        .expertise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .expertise-item {
+            background-color: var(--secondary);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            transition: var(--transition);
+            border: var(--border);
+        }
+        
+        .expertise-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+            border-color: rgba(100, 255, 218, 0.3);
+        }
+        
+        .expertise-item h4 {
+            color: var(--light);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .expertise-item p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        /* Contact */
+        .contact {
+            background-color: var(--dark);
+            border-top: var(--border);
+        }
+        
+        .contact-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+        
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.5rem;
+            background-color: rgba(17, 34, 64, 0.5);
+            border-radius: var(--radius);
+            transition: var(--transition);
+            border: var(--border);
+        }
+        
+        .contact-item:hover {
+            background-color: rgba(17, 34, 64, 0.8);
+            transform: translateX(5px);
+            border-color: rgba(100, 255, 218, 0.3);
+        }
+        
+        .contact-icon {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-top: 5px;
+            min-width: 40px;
+        }
+        
+        .contact-item h3 {
+            color: var(--light);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .contact-item p {
+            color: var(--gray);
+            line-height: 1.6;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: var(--gray);
+            padding: 3rem 0 1.5rem;
+            border-top: var(--border);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-column h4 {
+            color: var(--light);
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-column a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-column a:hover {
+            color: var(--accent);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(100, 255, 218, 0.1);
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        /* Улучшенные социальные иконки */
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-link {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            background: var(--secondary);
+            border: 1px solid rgba(100, 255, 218, 0.2);
+        }
+        
+        .social-link i {
+            font-size: 1.3rem;
+            color: var(--accent);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .social-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            transform: scale(0);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+        
+        .social-link:hover::before {
+            transform: scale(1);
+        }
+        
+        .social-link:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(100, 255, 218, 0.2);
+            border-color: transparent;
+        }
+        
+        .social-link:hover i {
+            color: var(--primary);
+        }
+        
+        .social-link.telegram:hover {
+            box-shadow: 0 10px 20px rgba(0, 136, 204, 0.3);
+        }
+        
+        .social-link.whatsapp:hover {
+            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);
+        }
+        
+        .social-link.email:hover {
+            box-shadow: 0 10px 20px rgba(234, 67, 53, 0.3);
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .service-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            
+            .logo-graphic {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .logo-center {
+                width: 36px;
+                height: 36px;
+            }
+            
+            .logo-text {
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background-color: var(--secondary);
+                flex-direction: column;
+                padding: 6rem 2rem 2rem;
+                box-shadow: -10px 0 30px rgba(2, 12, 27, 0.7);
+                transition: var(--transition);
+                z-index: 999;
+            }
+            
+            nav ul.active {
+                right: 0;
+                display: flex;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                z-index: 1000;
+            }
+            
+            .hero {
+                padding: 5rem 0 3rem;
+                text-align: center;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            section {
+                padding: 3rem 0;
+            }
+            
+            .contact-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .about-image {
+                height: 350px;
+            }
+            
+            .logo-graphic {
+                width: 55px;
+                height: 55px;
+            }
+            
+            .logo-center {
+                width: 32px;
+                height: 32px;
+            }
+            
+            .logo-text {
+                font-size: 0.85rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+            
+            .service-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .expertise-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .about-image {
+                height: 300px;
+            }
+            
+            .logo-graphic {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .logo-center {
+                width: 28px;
+                height: 28px;
+            }
+            
+            .logo-text {
+                font-size: 0.75rem;
+            }
+        }
+        
+        /* Прямоугольная версия лого для футера */
+        .footer-logo-graphic {
+            width: 50px;
+            height: 50px;
+            position: relative;
+        }
+        
+        .footer-logo-frame {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            border-radius: 8px;
+            z-index: 1;
+        }
+        
+        .footer-logo-center {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            top: 10px;
+            left: 10px;
+            background: rgba(10, 25, 47, 0.9);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            border: 1px solid rgba(100, 255, 218, 0.3);
+        }
+        
+        .footer-logo-text {
+            font-size: 0.8rem;
+            font-weight: 900;
+            color: var(--accent);
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <div class="container header-content">
+            <a href="#" class="logo">
+                <div class="logo-container">
+                    <!-- УСОВЕРШЕНСТВОВАННЫЙ СТРУКТУРИРОВАННЫЙ ЛОГОТИП -->
+                    <div class="logo-graphic">
+                        <!-- Внешняя рамка для структуры -->
+                        <div class="logo-frame"></div>
+                        
+                        <!-- Основание с градиентом -->
+                        <div class="logo-base"></div>
+                        
+                        <!-- Орбита с точками -->
+                        <div class="orbit"></div>
+                        
+                        <!-- Упорядоченные шестеренки в углах -->
+                        <i class="fas fa-cog gear gear-large gear-top-right"></i>
+                        <i class="fas fa-cog gear gear-small gear-bottom-left"></i>
+                        
+                        <!-- Центральный контейнер для текста -->
+                        <div class="logo-center">
+                            <div class="logo-text">ПИК</div>
+                        </div>
+                        
+                        <!-- Центральная точка -->
+                        <div class="center-dot"></div>
+                    </div>
+                    
+                    <div class="logo-text-container">
+                        <div class="logo-main-text">ПИК-Интегратор</div>
+                        <div class="logo-subtext">Интеллектуальная автоматизация</div>
+                    </div>
+                </div>
+            </a>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <nav>
+                <ul id="navMenu">
+                    <li><a href="#about">О компании</a></li>
+                    <li><a href="#services">Услуги</a></li>
+                    <li><a href="#expertise">Экспертиза</a></li>
+                    <li><a href="#contact">Контакты</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h1>ПИК-Интегратор: <span class="highlight">Интеллектуальная автоматизация</span></h1>
+            <p>Автоматизация технологических процессов, систем диспетчеризации и учета энергоресурсов.</p>
+            <a href="#contact" class="cta-button">
+                <span>Обсудить проект</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
+            
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label">Лет опыта</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">120+</div>
+                    <div class="stat-label">Проектов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Поддержка</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <div class="container">
+            <div class="section-title">
+                <h2>О компании</h2>
+                <p>Мы — команда профессионалов в области автоматизации технологических процессов</p>
+            </div>
+            
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Мы — <span class="highlight">инженерная команда</span>, которая превращает сложные промышленные задачи в эффективные и надежные автоматизированные решения. Наш подход основан на глубоком понимании технологий и потребностей бизнеса.</p>
+                    <p>В отличие от обычного электромонтажа, требующего значительных материальных затрат, мы фокусируемся на <span class="highlight">интеллектуальной составляющей</span>: проектировании, программировании и наладке систем, что дает нашим клиентам максимальную отдачу от инвестиций.</p>
+                    <p>Наша цель — сделать автоматизацию <span class="highlight">доступной и понятной</span> для любого предприятия, независимо от его размеров и текущего уровня технологической оснащенности.</p>
+                </div>
+                <div class="about-image">
+                    <img src="automation.jpg" alt="Автоматизация производства">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <div class="section-title">
+                <h2>Наши услуги</h2>
+                <p>Комплексный подход к автоматизации — от проектирования до ввода в эксплуатацию</p>
+            </div>
+            
+            <div class="service-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-drafting-compass"></i>
+                    </div>
+                    <h3>Проектирование систем</h3>
+                    <p>Разработка комплексных проектов систем АСУТП, АСДУЭ, АСКУЭ, телемеханики и связи с учетом всех технических требований.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3>Промышленное программирование</h3>
+                    <p>Программирование контроллеров Siemens, ABB, Schneider Electric и создание SCADA-систем для управления технологическими процессами.</p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3>Пуско-наладка</h3>
+                    <p>Комплексные работы по настройке, тестированию и запуску автоматизированных систем. Обучение персонала.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Expertise Section -->
+    <section id="expertise">
+        <div class="container">
+            <div class="section-title">
+                <h2>Экспертиза</h2>
+                <p>Работаем с ведущими технологическими платформами для создания надежных решений</p>
+            </div>
+            
+            <div class="expertise-grid">
+                <div class="expertise-item">
+                    <h4>Программируемые контроллеры</h4>
+                    <p>Siemens S7-300/400/1200/1500, Yokogawa Centum, ABB AC800FR, Schneider Electric</p>
+                </div>
+                
+                <div class="expertise-item">
+                    <h4>SCADA-системы</h4>
+                    <p>Yokogawa Centum VP, Siemens WinCC, ABB Freelancer, Schneider Electric EcoStruxure</p>
+                </div>
+                
+                <div class="expertise-item">
+                    <h4>Полевое оборудование</h4>
+                    <p>Многофункциональные преобразователи, терминалы РЗА, приборы учета электроэнергии</p>
+                </div>
+                
+                <div class="expertise-item">
+                    <h4>Системы телемеханики</h4>
+                    <p>Конфигурирование контроллеров телемеханики, настройка обмена данными, визуализация</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2>Контакты</h2>
+                <p>Свяжитесь с нами для обсуждения вашего проекта или получения консультации</p>
+            </div>
+            
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div>
+                            <h3>ООО «ПИК-Интегратор»</h3>
+                            <p>423812, Республика Татарстан, г. Набережные Челны, ул. Ахметшина, здание 123А, офис 211</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <div>
+                            <h3>Директор</h3>
+                            <p>Камалов Андрей Альбертович</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div>
+                            <h3>Телефон</h3>
+                            <p>+7 (987) 422-25-87</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h3>E-mail</h3>
+                            <p>andrey.kama@mail.ru</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <div class="logo-container" style="margin-bottom: 1rem;">
+                        <div class="footer-logo-graphic">
+                            <div class="footer-logo-frame"></div>
+                            <div class="footer-logo-center">
+                                <div class="footer-logo-text">ПИК</div>
+                            </div>
+                        </div>
+                        <div class="logo-text-container">
+                            <div class="logo-main-text" style="font-size: 1.3rem;">ПИК-Интегратор</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 10px; line-height: 1.7;">Интеллектуальные решения для автоматизации производства и учета ресурсов. Проектирование, программирование, пуско-наладка.</p>
+                    <div class="social-links">
+                        <a href="https://t.me/your-telegram" class="social-link telegram" title="Telegram">
+                            <i class="fab fa-telegram-plane"></i>
+                        </a>
+                        <a href="https://wa.me/79874222587" class="social-link whatsapp" title="WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="mailto:andrey.kama@mail.ru" class="social-link email" title="Email">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Услуги</h4>
+                    <ul>
+                        <li><a href="#services">Проектирование систем</a></li>
+                        <li><a href="#services">Промышленное программирование</a></li>
+                        <li><a href="#services">Пуско-наладка</a></li>
+                        <li><a href="#services">Системы учета</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Контакты</h4>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt" style="color: var(--accent); margin-right: 10px;"></i> Набережные Челны, ул. Ахметшина, 123А</li>
+                        <li><i class="fas fa-phone" style="color: var(--accent); margin-right: 10px;"></i> +7 (987) 422-25-87</li>
+                        <li><i class="fas fa-envelope" style="color: var(--accent); margin-right: 10px;"></i> andrey.kama@mail.ru</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2026 ООО "ПИК-Интегратор". Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navMenu = document.getElementById('navMenu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            mobileMenuBtn.innerHTML = navMenu.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+        });
+        
+        // Close menu when clicking on a link
+        document.querySelectorAll('#navMenu a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            });
+        });
+        
+        // Header scroll effect
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                if(this.getAttribute('href') === '#') return;
+                
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if(targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Приостановка анимации при неактивной вкладке для оптимизации
+        document.addEventListener('visibilitychange', function() {
+            const gears = document.querySelectorAll('.gear');
+            const orbit = document.querySelector('.orbit');
+            if (document.hidden) {
+                gears.forEach(gear => {
+                    gear.style.animationPlayState = 'paused';
+                });
+                if (orbit) orbit.style.animationPlayState = 'paused';
+            } else {
+                gears.forEach(gear => {
+                    gear.style.animationPlayState = 'running';
+                });
+                if (orbit) orbit.style.animationPlayState = 'running';
+            }
+        });
+        
+        // Предзагрузка картинки для плавного отображения
+        window.addEventListener('load', function() {
+            const img = new Image();
+            img.src = 'automation.jpg';
+            img.onload = function() {
+                console.log('Изображение загружено: automation.jpg');
+            };
+        });
+    </script>
+</body>
+</html>
